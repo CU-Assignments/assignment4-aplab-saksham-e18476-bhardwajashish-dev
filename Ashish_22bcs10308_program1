@@ -1,0 +1,43 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+vector<int> beautifulArray(int n) {
+    vector<int> result = {1};  // Start with the base case
+
+    while (result.size() < n) {
+        vector<int> new_result;
+        
+        // Generate odd numbers
+        for (int x : result) {
+            if (2 * x - 1 <= n)
+                new_result.push_back(2 * x - 1);
+        }
+
+        // Generate even numbers
+        for (int x : result) {
+            if (2 * x <= n)
+                new_result.push_back(2 * x);
+        }
+
+        result = new_result;
+    }
+    return result;
+}
+
+int main() {
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+
+    vector<int> res = beautifulArray(n);
+    
+    cout << "Beautiful Array: ";
+    for (int num : res) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
