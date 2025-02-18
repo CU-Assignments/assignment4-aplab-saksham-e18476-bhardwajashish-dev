@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <set>
+#include <algorithm>
+
+using namespace std;
+
+vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+    vector<pair<int, int>> events;
+    vector<vector<int>> skyline;
+
+    // Step 1: Create events for each building
+    for (auto& b : buildings) {
+        events.emplace_back(b[0], -b[2]); // Building start (negative height for sorting)
+        events.emplace_back(b[1], b[2]);  // Building end (positive height)
+    }
+
+    // Step 2: Sort events
+    sort(events.begin(), events.end());
+
+    // Max-Heap (Multiset for automatic sorting and handling duplicates)
+    multiset<int> heights = {0};
+    int prevMaxHeight = 0;
+
+    // Step 3: Process events
+    for (auto& [x, h] : events) {
+        if (h < 0) {
+            heights.insert(-h);  // Add building height (start event)
+        } else {
+            heights.erase(heights.find(h)); // Remove height (end event)
+        }
+
+        int currMaxHeight = *heights.rbegin(); // Get the current max height
+
+        if (currMaxHeight != prevMaxHeight) { // If skyline changes, add key point
+            skyline.push_back({x, currMaxHeight});
+            prevMaxHeight = currMaxHeight;
+        }
+    }
+
+    return skyline;
+}
+
+int main() {
+    vector<vector<int>> buildings = {{2,9,10}, {3,7,15}, {5,12,12}, {15,20,10}, {19,24,8}};
+
+    vector<vector<int>> result = getSkyline(buildings);
+
+    cout << "Skyline: ";
+    for (auto& point : result) {
+        cout << "[" << point[0] << "," << point[1] << "] ";
+    }
+    cout << endl;
+
+    return 0;
+}
